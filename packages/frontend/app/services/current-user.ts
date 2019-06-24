@@ -24,7 +24,6 @@ export const currentUserId = 'me';
 // is upon update and initial creation of the identity data.
 export default class CurrentUserService extends Service {
   @service store!: StoreService;
-
   @tracked record?: User;
 
   // safety for not accidentally blowing away an existing identity

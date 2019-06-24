@@ -15,6 +15,7 @@ export default class ApplicationRoute extends Route {
   @service locale!: LocaleService;
   @service settings!: Settings;
   @service connection!: ConnectionService;
+  @service('current-user/transfer-to-device') transfer;
 
   async beforeModel() {
     await runMigrations(getOwner(this));
@@ -24,6 +25,8 @@ export default class ApplicationRoute extends Route {
     this.settings.applyTheme();
     await this.locale.setLocale(this.locale.currentLocale);
     await this.currentUser.load();
+
+    this.transfer.test();
   }
 
   async model() {
