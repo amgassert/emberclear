@@ -169,15 +169,15 @@ module.exports = function(defaults) {
   });
 
   // Embroider is too buggy atm
-  // return require('@embroider/compat').compatBuild(app, require('@embroider/webpack').Webpack, {
-  //   extraPublicTrees: [qrScannerWorker],
-  //   // staticAddonTestSupportTrees: true,
-  //   // staticAddonTrees: true,
-  //   // staticHelpers: true,
-  //   // staticComponents: true,
-  //   // splitAtRoutes: true,
-  //   // skipBabel: [],
-  // });
+  return require('@embroider/compat').compatBuild(app, require('@embroider/webpack').Webpack, {
+    extraPublicTrees: [qrScannerWorker],
+    // staticAddonTestSupportTrees: true,
+    // staticAddonTrees: true,
+    // staticHelpers: true,
+    // staticComponents: true,
+    // splitAtRoutes: true,
+    // skipBabel: [],
+  });
 
-  return mergeTrees([app.toTree(), qrScannerWorker]);
+  // return mergeTrees([app.toTree(), qrScannerWorker]);
 };
