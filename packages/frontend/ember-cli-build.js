@@ -168,14 +168,30 @@ module.exports = function(defaults) {
     destDir: '/libraries/qr-scanner/',
   });
 
-  // Embroider is too buggy atm
+  // Compat Notes:
+  //
+  // /tests:
+  //  - global is not defined
+  //  - The tests file was not loaded. Make sure your tests index.html includes "assets/tests.js".
   return require('@embroider/compat').compatBuild(app, require('@embroider/webpack').Webpack, {
     extraPublicTrees: [qrScannerWorker],
+    // prior errors prevent this from being tested
     // staticAddonTestSupportTrees: true,
+
+    // ember-intl:
+    //  - TypeError: Cannot read property 'localeFactory' of undefined
     // staticAddonTrees: true,
-    // staticHelpers: true,
-    // staticComponents: true,
-    // splitAtRoutes: true,
+
+    // no issues noticed
+    staticHelpers: true,
+
+    // no issues noticed
+    staticComponents: true,
+
+    // nothing different happened here?
+    // maybe this requires the static addon options?
+    splitAtRoutes: true,
+
     // skipBabel: [],
   });
 
