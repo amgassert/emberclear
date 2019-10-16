@@ -49,6 +49,7 @@ module.exports = function(environment) {
           'globe',
           'bars',
           'search',
+          'thumbtack',
         ],
       },
     },
