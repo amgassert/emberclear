@@ -32,7 +32,7 @@ export default class SidebarContact extends Component<IArgs> {
 
   @reads('settings.hideOfflineContacts') hideOfflineContacts!: boolean;
 
-  get getIsPinned(){
+  get isPinned() {
     const { contact } = this.args;
 
     return contact.isPinned;
@@ -62,7 +62,7 @@ export default class SidebarContact extends Component<IArgs> {
     }
 
     // always show if contact is pinned
-    if(contact.isPinned){
+    if (contact.isPinned) {
       return true;
     }
 
@@ -83,7 +83,7 @@ export default class SidebarContact extends Component<IArgs> {
     return messages.length;
   }
 
-  @task(function*(this: SidebarContact) {
+  @task(function* (this: SidebarContact) {
     const messages = yield this.store.findAll('message');
 
     this.messages = messages;
@@ -98,14 +98,15 @@ export default class SidebarContact extends Component<IArgs> {
     this.router.transitionTo('chat.privately-with', this.args.contact.id);
   }
 
-  @action onPinClick() {
+  @action onPin() {
     const { contact } = this.args;
     contact.set('isPinned', !contact.isPinned);
     contact.save();
   }
 
-  get isOtherContacts() {
+  get canBePinned() {
     const { contact } = this.args;
+    // can't pin your own chat
     return contact.id !== currentUserId;
   }
 }

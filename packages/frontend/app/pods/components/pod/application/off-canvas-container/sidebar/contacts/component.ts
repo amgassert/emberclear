@@ -25,8 +25,8 @@ export default class ContactsSidebar extends Component<IArgs> {
   }
 
   get contacts() {
-    var sortedContacts: Contact[];
-    sortedContacts = this.allContacts.sort((a, b) => (a.isPinned === b.isPinned) ? 0 : a.isPinned ? -1 : 1);
+    const sortedContacts = this.allContacts.sort((a, b) =>
+      a.isPinned === b.isPinned ? 0 : a.isPinned ? -1 : 1);
     if (!this.hideOfflineContacts) {
       return sortedContacts;
     }
@@ -40,8 +40,8 @@ export default class ContactsSidebar extends Component<IArgs> {
   }
 
   get offlineContacts() {
-    return this.allContacts.filter(contact => (contact.onlineStatus === STATUS.OFFLINE 
-      && !contact.isPinned));
+    return this.allContacts.filter(contact =>
+      (contact.onlineStatus === STATUS.OFFLINE && !contact.isPinned));
   }
 
   get numberOffline() {

@@ -1,0 +1,13 @@
+a.contact-display{
+    display: inline-block;
+    width: 80%;
+}
+
+button.pin-button{
+    background-color: transparent; 
+    border: none;
+}
+
+.pin-icon{
+    color: black;
+}
