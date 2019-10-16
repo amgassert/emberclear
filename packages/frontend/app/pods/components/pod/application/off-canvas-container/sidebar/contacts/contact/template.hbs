@@ -20,12 +20,12 @@
       </span>
     {{/if}}
   </a>
-  {{#if this.isOtherContacts}}
-  <span
-    {{on 'click' (prevent-default this.onPinClick)}}
-  >
-    <FaIcon @icon='thumbtack' @rotation={{if this.getIsPinned 0 90}}/>
-  </span>
+  {{#if this.canBePinned}}
+    <button class='pin-button'
+      {{on 'click' (prevent-default this.onPin)}}
+    >
+      <FaIcon @icon='thumbtack' class='pin-icon' @rotation={{if this.isPinned 0 90}}/>
+    </button>
   {{/if}}
   <br>
 {{/if}}
