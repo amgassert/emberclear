@@ -32,6 +32,11 @@
   }
 }
 
+a.contact-display{
+  display: inline-block;
+  width: 80%;
+}
+
 a.new-messages {
   @apply --no-select;
 

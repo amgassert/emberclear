@@ -4,7 +4,7 @@
     href={{url-for 'chat.privately-with' @contact.id}}
     {{did-insert (perform this.findRelevantMessages)}}
     {{on 'click' (prevent-default this.onClick)}}
-    class={{if this.isActive 'is-active'}}
+    class={{if this.isActive 'is-active contact-display' 'contact-display'}}
   >
     <span data-test-contact-name>
       <StatusIcon @contact={{@contact}} />
@@ -20,4 +20,12 @@
       </span>
     {{/if}}
   </a>
+  {{#if this.isOtherContacts}}
+  <span
+    {{on 'click' (prevent-default this.onPinClick)}}
+  >
+    <FaIcon @icon='thumbtack' @rotation={{if this.getIsPinned 0 90}}/>
+  </span>
+  {{/if}}
+  <br>
 {{/if}}

@@ -32,6 +32,12 @@ export default class SidebarContact extends Component<IArgs> {
 
   @reads('settings.hideOfflineContacts') hideOfflineContacts!: boolean;
 
+  get getIsPinned(){
+    const { contact } = this.args;
+
+    return contact.isPinned;
+  }
+
   get isActive() {
     const { contact } = this.args;
 
@@ -52,6 +58,11 @@ export default class SidebarContact extends Component<IArgs> {
 
     // always show if there are unread messages
     if (this.hasUnread) {
+      return true;
+    }
+
+    // always show if contact is pinned
+    if(contact.isPinned){
       return true;
     }
 
@@ -85,5 +96,16 @@ export default class SidebarContact extends Component<IArgs> {
     }
 
     this.router.transitionTo('chat.privately-with', this.args.contact.id);
+  }
+
+  @action onPinClick() {
+    const { contact } = this.args;
+    contact.set('isPinned', !contact.isPinned);
+    contact.save();
+  }
+
+  get isOtherContacts() {
+    const { contact } = this.args;
+    return contact.id !== currentUserId;
   }
 }

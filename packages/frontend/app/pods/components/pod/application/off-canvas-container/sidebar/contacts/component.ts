@@ -25,12 +25,13 @@ export default class ContactsSidebar extends Component<IArgs> {
   }
 
   get contacts() {
+    var sortedContacts: Contact[];
+    sortedContacts = this.allContacts.sort((a, b) => (a.isPinned === b.isPinned) ? 0 : a.isPinned ? -1 : 1);
     if (!this.hideOfflineContacts) {
-      return this.allContacts;
+      return sortedContacts;
     }
-
-    return this.allContacts.filter(contact => {
-      return contact.onlineStatus !== STATUS.OFFLINE;
+    return sortedContacts.filter(contact => {
+      return contact.onlineStatus !== STATUS.OFFLINE || contact.isPinned;
     });
   }
 
@@ -39,7 +40,8 @@ export default class ContactsSidebar extends Component<IArgs> {
   }
 
   get offlineContacts() {
-    return this.allContacts.filter(contact => contact.onlineStatus === STATUS.OFFLINE);
+    return this.allContacts.filter(contact => (contact.onlineStatus === STATUS.OFFLINE 
+      && !contact.isPinned));
   }
 
   get numberOffline() {
