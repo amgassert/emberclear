@@ -1,10 +1,13 @@
-import { getStatus } from 'poll-pr-status';
+const { getStatus } = require('poll-pr-status');
 
-import { repository } from '../../frontend/package';
+const { repository } = require('../../frontend/package');
 
-import { startServer } from './start-server';
+const { startServer } = require('./start-server');
 
-export function setupEndpoint() {
+/**
+ * Adds this.host, and this.server
+ */
+function setupEndpoint() {
   before(async function() {
     switch (process.env.WEBDRIVER_TARGET) {
       case 'pull-request': {
@@ -35,4 +38,16 @@ export function setupEndpoint() {
       }
     }
   });
+
+  after(async function() {
+    if (this.server) {
+      this.server.kill();
+
+      await this.server;
+    }
+  });
 }
+
+module.exports = {
+  setupEndpoint,
+};
