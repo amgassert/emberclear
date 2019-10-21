@@ -7,52 +7,92 @@ const { setupEndpoint } = require('../helpers/setup-endpoint');
 
 const { users } = require('../fixtures/users');
 
+const Home = require('../page-objects/home');
 const Login = require('../page-objects/login');
 const AddFriend = require('../page-objects/add-friend');
 const Chat = require('../page-objects/chat');
+const Setup = require('../page-objects/setup');
+
+const browserPagesFor = PageObject => {
+  return this.browsers.map(browser => {
+    return new PageObject(this.host, browser);
+  });
+};
 
 describe('chat', function() {
   setUpWebDriver.call(this);
   setupEndpoint.call(this);
 
   describe('New users can add each other and then communicate', function() {
+    let home1, home2, setup1, setup2, addFriend1, addFriend2, chat1, chat2;
 
+    beforeEach(async function() {
+      [home1, home2] = browserPagesFor(Home);
+      [setup1, setup2] = browserPagesFor(Setup);
+      [addFriend1, addFriend2] = browserPagesFor(AddFriend);
+      [chat1, chat2] = browserPagesFor(Chat);
+
+      await Promise.all([home1.visit(), home2.visit()]);
+    });
+
+    it('fresh users can begin communicating with each other', async function() {
+      await Promise.all([
+        setup1.onboardSelf('Person A'),
+        setup2.onboardSelf('Person B'),
+      ]);
+
+      await addFriend1.addFriendButton.click();
+
+      let inviteUrl = this.addFriend1.inviteUrl;
+
+      await addFriend2.addFriend(inviteUrl);
+
+      // TODO:
+      // open A's sidebar
+      // assert that B is there
+      // assert that A is in B's sidebar
+      //
+
+      // messages are the same as below
+      await Promise.all([
+        chat1.sendMessage('To Person B, from Person A'),
+        chat2.sendMessage('To Person A, from Person B'),
+      ]);
+
+      // TODO: assert that the massages were received
+
+      assert.ok(true);
+    });
   });
 
   describe('existing users can communicate', function() {
-    beforeEach(async function() {
-      this.loginPage1 = new Login(this.browsers[0]);
-      this.loginPage2 = new Login(this.browsers[1]);
-      this.addFriendPage1 = new AddFriend(this.host, this.browsers[0]);
-      this.addFriendPage2 = new AddFriend(this.host, this.browsers[1]);
-      this.chatPage1 = new Chat(this.browsers[0]);
-      this.chatPage2 = new Chat(this.browsers[1]);
+    let home1, home2, login1, login2, addFriend1, addFriend2, chat1, chat2;
 
-      await Promise.all([
-        this.browsers[0].url(this.host),
-        this.browsers[1].url(this.host),
-      ]);
+    beforeEach(async function() {
+      [home1, home2] = browserPagesFor(Home);
+      [login1, login2] = browserPagesFor(Login);
+      [addFriend1, addFriend2] = browserPagesFor(AddFriend);
+      [chat1, chat2] = browserPagesFor(Chat);
+
+      await Promise.all([home1.visit(), home2.visit()]);
     });
 
-    it('works', async function() {
+    it('users receive each others messages', async function() {
+      await Promise.all([login1.logIn(users[0]), login2.logIn(users[1])]);
+
       await Promise.all([
-        this.loginPage1.logIn(users[0]),
-        this.loginPage2.logIn(users[1]),
+        addFriend1.addFriend(users[1].publicKey),
+        addFriend2.addFriend(users[0].publicKey),
       ]);
 
       await Promise.all([
-        this.addFriendPage1.addFriend(users[1]),
-        this.addFriendPage2.addFriend(users[0]),
+        chat1.sendMessage(users[0].message),
+        chat2.sendMessage(users[1].message),
       ]);
 
       await Promise.all([
-        this.chatPage1.sendMessage(users[0].message),
-        this.chatPage2.sendMessage(users[1].message),
-      ]);
-
-      await Promise.all([
-        this.chatPage1.waitForResponse(users[1]),
-        this.chatPage2.waitForResponse(users[0]),
+        chat1.waitForResponse(users[1]),
+        chat2.waitForResponse(users[0]),
       ]);
 
       assert.ok(true);
