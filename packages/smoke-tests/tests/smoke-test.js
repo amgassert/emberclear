@@ -1,47 +1,15 @@
-'use strict';
+import { setUpWebDriver } from '@faltest/lifecycle';
+import { ok } from 'assert';
 
-const { setUpWebDriver } = require('@faltest/lifecycle');
-const assert = require('assert');
-const Login = require('../page-objects/login');
-const AddFriend = require('../page-objects/add-friend');
-const Chat = require('../page-objects/chat');
-const { startServer } = require('../helpers/start-server');
-const { repository } = require('../../frontend/package');
-const { getStatus } = require('poll-pr-status');
+import { setupEndpoint } from '../helpers/setup-endpoint';
+
+import Login from '../page-objects/login';
+import AddFriend from '../page-objects/add-friend';
+import Chat from '../page-objects/chat';
 
 describe('smoke', function() {
   setUpWebDriver.call(this);
-
-  before(async function() {
-    switch (process.env.WEBDRIVER_TARGET) {
-      case 'pull-request': {
-        // wait for the netlify job to start
-        this.timeout(5 * 60 * 1000);
-
-        let status = await getStatus({
-          repository,
-          context: 'deploy/netlify',
-        });
-
-        this.host = status.target_url;
-
-        break;
-      }
-      case 'local': {
-        let serverInfo = await startServer();
-
-        this.server = serverInfo.server;
-        this.host = `http://localhost:${serverInfo.port}`;
-
-        break;
-      }
-      default: {
-        this.host = 'https://emberclear.io';
-
-        break;
-      }
-    }
-  });
+  setupEndpoint.call(this);
 
   beforeEach(async function() {
     this.loginPage1 = new Login(this.browsers[0]);
@@ -105,6 +73,6 @@ describe('smoke', function() {
       this.chatPage2.waitForResponse(users[0]),
     ]);
 
-    assert.ok(true);
+    ok(true);
   });
 });
