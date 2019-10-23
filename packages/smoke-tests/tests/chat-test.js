@@ -4,6 +4,7 @@ const { setUpWebDriver } = require('@faltest/lifecycle');
 const assert = require('assert');
 
 const { setupEndpoint } = require('../helpers/setup-endpoint');
+const { pagesFor } = require('../helpers/pages-for');
 
 const { users } = require('../fixtures/users');
 
@@ -13,12 +14,6 @@ const AddFriend = require('../page-objects/add-friend');
 const Chat = require('../page-objects/chat');
 const Setup = require('../page-objects/setup');
 
-const browserPagesFor = PageObject => {
-  return this.browsers.map(browser => {
-    return new PageObject(this.host, browser);
-  });
-};
-
 describe('chat', function() {
   setUpWebDriver.call(this);
   setupEndpoint.call(this);
@@ -27,10 +22,10 @@ describe('chat', function() {
     let home1, home2, setup1, setup2, addFriend1, addFriend2, chat1, chat2;
 
     beforeEach(async function() {
-      [home1, home2] = browserPagesFor(Home);
-      [setup1, setup2] = browserPagesFor(Setup);
-      [addFriend1, addFriend2] = browserPagesFor(AddFriend);
-      [chat1, chat2] = browserPagesFor(Chat);
+      [home1, home2] = pagesFor.call(this, Home);
+      [setup1, setup2] = pagesFor.call(this, Setup);
+      [addFriend1, addFriend2] = pagesFor.call(this, AddFriend);
+      [chat1, chat2] = pagesFor.call(this, Chat);
 
       await Promise.all([home1.visit(), home2.visit()]);
     });
@@ -46,6 +41,11 @@ describe('chat', function() {
       let inviteUrl = this.addFriend1.inviteUrl;
 
       await addFriend2.addFriend(inviteUrl);
+
+      await Promise.all([home1.sidebar.open(), home2.sidebar.open()]);
+
+      let contacts = home1.sidebar.contacts;
+      console.log(contacts);
 
       // TODO:
       // open A's sidebar
@@ -69,10 +69,10 @@ describe('chat', function() {
     let home1, home2, login1, login2, addFriend1, addFriend2, chat1, chat2;
 
     beforeEach(async function() {
-      [home1, home2] = browserPagesFor(Home);
-      [login1, login2] = browserPagesFor(Login);
-      [addFriend1, addFriend2] = browserPagesFor(AddFriend);
-      [chat1, chat2] = browserPagesFor(Chat);
+      [home1, home2] = pagesFor.call(this, Home);
+      [login1, login2] = pagesFor.call(this, Login);
+      [addFriend1, addFriend2] = pagesFor.call(this, AddFriend);
+      [chat1, chat2] = pagesFor.call(this, Chat);
 
       await Promise.all([home1.visit(), home2.visit()]);
     });

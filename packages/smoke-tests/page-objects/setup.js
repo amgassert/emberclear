@@ -4,7 +4,7 @@ const BasePageObject = require('./-base');
 
 class Setup extends BasePageObject {
   get nameInput() {
-    return this._create('form input[type="text"]');
+    return this._create('input[type="text"]');
   }
 
   get nextButton() {
