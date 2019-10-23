@@ -31,6 +31,8 @@ describe('chat', function() {
     });
 
     it('fresh users can begin communicating with each other', async function() {
+      await Promise.all([home1.beginButton.click(), home2.begunButton.click()]);
+
       await Promise.all([
         setup1.onboardSelf('Person A'),
         setup2.onboardSelf('Person B'),

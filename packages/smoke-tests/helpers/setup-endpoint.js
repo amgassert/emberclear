@@ -37,6 +37,10 @@ function setupEndpoint() {
         break;
       }
     }
+
+    if (process.env.VERBOSE) {
+      console.info('Host:', this.host);
+    }
   });
 
   after(async function() {
