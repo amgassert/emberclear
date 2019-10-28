@@ -47,24 +47,21 @@ export default class SidebarContact extends Component<IArgs> {
   get shouldBeRendered() {
     const { contact } = this.args;
 
-    if (contact.id === currentUserId) {
+
+    let shouldRender =
+      contact.id === currentUserId ||
+      // always show if online
+      contact.onlineStatus !== STATUS.OFFLINE ||
+      // always show if there are unread messages
+      this.hasUnread ||
+      // always show if contact is pinned
+      this.isPinned;
+
+
+    if (shouldRender) {
       return true;
     }
 
-    // always show if online
-    if (contact.onlineStatus !== STATUS.OFFLINE) {
-      return true;
-    }
-
-    // always show if there are unread messages
-    if (this.hasUnread) {
-      return true;
-    }
-
-    // always show if contact is pinned
-    if (contact.isPinned) {
-      return true;
-    }
 
     // do not show offline contacts if configured that way
     return !this.hideOfflineContacts;
@@ -80,7 +77,7 @@ export default class SidebarContact extends Component<IArgs> {
     return this.unreadMessages.length;
   }
 
-  @task(function* (this: SidebarContact) {
+  @task(function*(this: SidebarContact) {
     let { contact } = this.args;
     let messages = yield this.store.findAll('message');
     let unread = selectUnreadDirectMessages(messages, contact.id);
