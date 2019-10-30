@@ -47,7 +47,6 @@ export default class SidebarContact extends Component<IArgs> {
   get shouldBeRendered() {
     const { contact } = this.args;
 
-
     let shouldRender =
       contact.id === currentUserId ||
       // always show if online
@@ -56,7 +55,6 @@ export default class SidebarContact extends Component<IArgs> {
       this.hasUnread ||
       // always show if contact is pinned
       this.isPinned;
-
 
     if (shouldRender) {
       return true;
