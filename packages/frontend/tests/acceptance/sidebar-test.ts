@@ -91,6 +91,24 @@ module('Acceptance | Sidebar', function(hooks) {
             assert.ok(result!.match(/1/));
           });
         });
+
+        module('pinned contacts are to be shown', function(hooks) {
+          hooks.beforeEach(async function() {
+            const store = getStore();
+            const contacts = store.peekAll('contact').toArray();
+            const contact = contacts.find(item => item.name === 'first contact');
+            contact.isPinned = true;
+          });
+
+          test('both contacts should be shown', function(assert){
+            const store = getStore(); 
+            const contacts = store.peekAll('contact').toArray();
+            const contact = contacts.find(item => item.name === 'first contact');
+            const content = page.sidebar.contacts.listText;
+            assert.ok(content.includes(contact.name), 'current user name is present');
+            assert.equal(page.sidebar.contacts.list.length, 2, 'two users in the contacts list');
+          });
+        });
       });
 
       module('there are 2 contacts', function(hooks) {
